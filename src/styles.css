@@ -59,9 +59,13 @@ input[type="text"] {
   }
 }
 
-.result-icon,
+.result-icon {
+  width: 48%;
+  padding: 20px;
+}
+
 .result-path {
-  flex: 1;
+  width: 52%;
   padding: 20px;
 }
 

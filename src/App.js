@@ -32,7 +32,8 @@ function App() {
   const [filteredData, setFilteredData] = useState(data);
   const [selectedValue, setSelectedValue] = useState('23');
   const [selectedIcon, setSelectedIcon] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState('1st'); // 預設為 '1st'
+  const [selectedBranch, setSelectedBranch] = useState('1st');
+  const [numberImageWidth, setNumberImageWidth] = useState(null);
 
   const selectOptions = [
     { value: '15', label: '15' },
@@ -128,30 +129,24 @@ function App() {
 
   const loadNumberImage = (itemId, selectedValue, selectedBranch) => {
     const branchPath = selectedBranch ? `/${selectedBranch}` : '';
-    const pngImage = new Image(), jpgImage = new Image();
-    if (itemId < 10580 && itemId !== 10534 && itemId !== 10410) { // 完全確定的直接載入
-      jpgImage.src = `${path}/number/${itemId}${branchPath}/${selectedValue}.jpg`;
-      jpgImage.onload = () => {
-        setNumberImageSrc(`${path}/number/${itemId}${branchPath}/${selectedValue}.jpg`);
+    const handleImageLoad = (type) => {
+      const newImage = new Image();
+      newImage.onload = () => {
+        const newWidth = `${newImage.width / 3}px`;
+        setNumberImageSrc(`${path}/number/${itemId}${branchPath}/${selectedValue}.${type}`);
+        setNumberImageWidth(newWidth);
       };
-      jpgImage.onerror = () => {
+      newImage.onerror = () => {
         setNumberImageSrc('');
+        setNumberImageWidth(null);
       };
-    }
-    else { // 其次優先載入png檔
-      pngImage.src = `${path}/number/${itemId}${branchPath}/${selectedValue}.png`;
-      pngImage.onload = () => {
-        setNumberImageSrc(`${path}/number/${itemId}${branchPath}/${selectedValue}.png`);
-      };
-      pngImage.onerror = () => {
-        jpgImage.src = `${path}/number/${itemId}${branchPath}/${selectedValue}.jpg`;
-        jpgImage.onload = () => {
-          setNumberImageSrc(`${path}/number/${itemId}${branchPath}/${selectedValue}.jpg`);
-        };
-        jpgImage.onerror = () => {
-          setNumberImageSrc('');
-        };
-      };
+      newImage.src = `${path}/number/${itemId}${branchPath}/${selectedValue}.${type}`;
+    };
+
+    if (itemId > 10616 || ((itemId === 10598 || itemId === 10580 || itemId === 10534 || itemId === 10410) && isNaN(selectedValue))) {
+      handleImageLoad('png');
+    } else {
+      handleImageLoad('jpg');
     }
   };
 
@@ -226,7 +221,7 @@ function App() {
           {selectedItem && (
             <>
               {numberImageSrc ? (
-                <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: '200px', marginTop: '7px', }} />
+                <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth, marginTop: '7px', }} />
               ) : (
                 <span style={{ fontSize: '30px' }}>未補或從缺</span>
               )}
