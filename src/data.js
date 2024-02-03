@@ -8,7 +8,7 @@ const data = [
   { id: 10336, attr: 'fire', race: 'human' },
   { id: 10345, attr: 'light', race: 'human' },
   { id: 10370, attr: 'dark', race: 'god' },
-  // { id: 10388, attr: 'dark', race: 'human' },
+  { id: 10388, attr: 'dark', race: 'human' },
   { id: 10410, attr: 'light', race: 'machine' },
   { id: 10534, attr: 'light', race: 'machine' },
   { id: 10563, attr: 'fire', race: 'god' },
@@ -17,6 +17,7 @@ const data = [
   // { id: 10577, attr: 'water', race: 'human' },
   { id: 10580, attr: 'light', race: 'human' },
   { id: 10598, attr: 'light', race: 'demon' },
+  // { id: 10613, attr: 'fire', race: 'machine' },
   { id: 10617, attr: 'wood', race: 'beast' },
 ];
 

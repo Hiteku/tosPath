@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './styles.css';
 import data from './data';
+import data_chl from 'https://chaohanlin.github.io/img/tos/number/data.js';
 
+const mergedData = data.concat(data_chl).sort((a, b) => a.id - b.id);
 const path = 'https://hiteku.github.io/img/tos';
 
 function RadioOptions({ options, selected, handleOptionChange }) {
@@ -62,6 +64,8 @@ function App() {
         return [ { value: '1st', label: '首' }, { value: '2nd', label: '次' } ];
       case 3:
         return [ { value: 'T', label: '上' }, { value: 'L', label: '左' }, { value: 'R', label: '右' } ];
+      case 4:
+        return [ { value: 'A', label: '左上' }, { value: 'B', label: '右上' }, { value: 'C', label: '左下' }, { value: 'D', label: '右下' } ];
       default:
         return [];
     }
@@ -106,16 +110,16 @@ function App() {
   };
 
   const filterData = (attribute, race, keyword) => {
-    const filteredData = data.filter(item => (
+    const filteredData = mergedData.filter(item => (
       (attribute === 'none' || item.attr === attribute) &&
       (race === 'none' || item.race === race) &&
-      (item.attr.includes(keyword) || item.race.includes(keyword))
+      (item.id.toString().includes(keyword))
     ));
     setFilteredData(filteredData);
   };
 
   const handleIconClick = (itemId) => {
-    const selectedItem = data.find(item => item.id === itemId);
+    const selectedItem = mergedData.find(item => item.id === itemId);
     setSelectedItem(selectedItem);
     setSelectedIcon(itemId);
     var branch = ''
@@ -123,6 +127,8 @@ function App() {
       branch = '1st'
     else if (selectedItem.branch === 3)
       branch = 'T'
+    else if (selectedItem.branch === 4)
+      branch = 'A'
     setSelectedBranch(branch);
     loadNumberImage(itemId, selectedValue, branch);
   };
@@ -131,16 +137,19 @@ function App() {
     const branchPath = selectedBranch ? `/${selectedBranch}` : '';
     const handleImageLoad = (type) => {
       const newImage = new Image();
+      var srcImg = `${path}/number/${itemId}${branchPath}/${selectedValue}.${type}`
+      if (!data.map(item => item.id).includes(itemId))
+        srcImg = `https://chaohanlin.github.io/img/tos/number/${itemId}${branchPath}/${selectedValue}.${type}`
       newImage.onload = () => {
         const newWidth = `${newImage.width / 3}px`;
-        setNumberImageSrc(`${path}/number/${itemId}${branchPath}/${selectedValue}.${type}`);
+        setNumberImageSrc(srcImg);
         setNumberImageWidth(newWidth);
       };
       newImage.onerror = () => {
         setNumberImageSrc('');
         setNumberImageWidth(null);
       };
-      newImage.src = `${path}/number/${itemId}${branchPath}/${selectedValue}.${type}`;
+      newImage.src = srcImg;
     };
 
     if (itemId > 10616 || ((itemId === 10598 || itemId === 10580 || itemId === 10534 || itemId === 10410) && isNaN(selectedValue))) {
@@ -204,9 +213,11 @@ function App() {
           {filteredData.map(item => (
             <img
               key={item.id}
-              src={`${path}/cards/icon/${item.id}i.png`}
+              // src={`${path}/cards/icon/${item.id}i.png`}
+              src={`https://web-assets.tosconfig.com/gallery/icons/${String(item.id).padStart(4, '0')}.jpg`}
               alt={`Icon ${item.id}`}
               style={{
+                borderRadius: '9%', 
                 width: '50px',
                 margin: '5px',
                 border: selectedIcon === item.id ? '2px solid #D3A4FF' : 'none',
