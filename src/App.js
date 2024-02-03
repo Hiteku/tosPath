@@ -79,17 +79,18 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
+      var mergedDataResult = data;
       try {
         const response = await fetch('https://chaohanlin.github.io/img/tos/number/data.js');
         const fetch_data = await response.text();
         const regex = /const data = (\[.*?\]);/s;
         // eslint-disable-next-line
         const data_chl = eval(fetch_data.match(regex)[1]);
-        const mergedDataResult = data.concat(data_chl).sort((a, b) => a.id - b.id);
-        setMergedData(mergedDataResult);
+        mergedDataResult = data.concat(data_chl).sort((a, b) => a.id - b.id);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+      setMergedData(mergedDataResult);
     };
     fetchData();
   }, [attribute, race, keyword, selectedValue, selectedBranch]);
