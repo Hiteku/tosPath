@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './styles.css';
 import data from './data';
-import data_chl from 'https://chaohanlin.github.io/img/tos/number/data.js';
 
-const mergedData = data.concat(data_chl).sort((a, b) => a.id - b.id);
 const path = 'https://hiteku.github.io/img/tos';
 
 function RadioOptions({ options, selected, handleOptionChange }) {
@@ -36,6 +34,7 @@ function App() {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState('1st');
   const [numberImageWidth, setNumberImageWidth] = useState(null);
+  const [mergedData, setMergedData] = useState([]);
 
   const selectOptions = [
     { value: '15', label: '15' },
@@ -79,8 +78,26 @@ function App() {
   }, [selectedItem]);
 
   useEffect(() => {
-    filterData(attribute, race, keyword);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://chaohanlin.github.io/img/tos/number/data.js');
+        const fetch_data = await response.text();
+        const regex = /const data = (\[.*?\]);/s;
+        // eslint-disable-next-line
+        const data_chl = eval(fetch_data.match(regex)[1]);
+        const mergedDataResult = data.concat(data_chl).sort((a, b) => a.id - b.id);
+        setMergedData(mergedDataResult);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
   }, [attribute, race, keyword, selectedValue, selectedBranch]);
+
+  useEffect(() => {
+    filterData(attribute, race, keyword);
+    // eslint-disable-next-line
+  }, [mergedData]);
 
   const handleAttributeChange = (value) => {
     setAttribute(value);
