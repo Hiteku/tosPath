@@ -86,7 +86,7 @@ function App() {
         const regex = /const data = (\[.*?\]);/s;
         // eslint-disable-next-line
         const data_chl = eval(fetch_data.match(regex)[1]);
-        mergedDataResult = data.concat(data_chl).sort((a, b) => a.id - b.id);
+        mergedDataResult = data.concat(data_chl.filter(item2 => !data.some(item1 => item1.id === item2.id))).sort((a, b) => a.id - b.id);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -170,16 +170,28 @@ function App() {
       newImage.src = srcImg;
     };
 
-    if (itemId > 10616 || ((itemId === 10598 || itemId === 10580 || itemId === 10534 || itemId === 10410) && isNaN(selectedValue))) {
+    if (itemId === 10617 || ((itemId === 10598 || itemId === 10580) && isNaN(selectedValue))) {
       handleImageLoad('png');
     } else {
       handleImageLoad('jpg');
     }
   };
 
+  const renderCRImage = (id, value, type) => {
+    const imagePath = `${path}/number/${id}/${value}_CR.${type}`;
+    return <img src={imagePath} alt={`Number ${id}_CR`} style={{ width: numberImageWidth }} />;
+  };
+
   return (
     <>
-      <h1>固版轉法查詢</h1>
+      {/* <h1>固版轉法查詢</h1> */}
+      <div id="imgCover">
+        <img
+          src={`https://hiteku.github.io/img/tos/tool/tosPath/header.png`}
+          alt="imgCover"
+          style={{ maxWidth: '500px', width: '100%' }}
+        />
+      </div>
       <div className='border'>
         <RadioOptions
           options={[
@@ -244,15 +256,32 @@ function App() {
               onClick={() => handleIconClick(item.id)}
             />
           ))}
-          <p>⚠️超級緩慢補檔中…<small>（新角色優先）</small></p>
+          <p>⚠️超級緩慢補檔中…<small>（若有誤請海涵並回報）</small></p>
         </div>
         <div className='result-path'>
           {selectedItem && (
             <>
               {numberImageSrc ? (
-                <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth, marginTop: '7px', }} />
+                <>
+                  <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} /><br/>
+                  {selectedItem.id === 2828 && <span>該路徑為三消</span>}
+                  {selectedItem.id === 10329 && <><span>第三種盤面可參考 </span><img
+                    src={`https://hiteku.github.io/img/tos/cards/icon/2791i.png`}
+                    alt="img10329"
+                    style={{ width: '35px' }}
+                  /></>}
+                  {selectedItem.id === 10410 && (selectedValue !== 'Same_5' && selectedValue !== 'Different_5' ) && 
+                    renderCRImage(selectedItem.id, selectedValue, 'jpg')
+                  }
+                  {selectedItem.id === 10580 && (selectedValue === 'Cross-Shaped_1' || selectedValue === 'Cross-Shaped_2' ) && 
+                    <img src={`${path}/number/${selectedItem.id}/${selectedValue}.jpg`} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} />
+                  }
+                  {selectedItem.id === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5' ) && 
+                    renderCRImage(selectedItem.id, selectedValue, 'jpg')
+                  }
+                </>
               ) : (
-                <span style={{ fontSize: '30px' }}>未補或從缺</span>
+                <span style={{ fontSize: '24px' }}>圖檔未補</span>
               )}
             </>
           )}
@@ -260,16 +289,16 @@ function App() {
       </div>
       <div className='src'>
         <sub>
-          <a href="https://forum.gamer.com.tw/C.php?bsn=23805&snA=703158" target="_blank" rel="noopener noreferrer">
+          <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4103723" target="_blank" rel="noopener noreferrer">
             <img
               src={`https://hiteku.github.io/img/-/bahamut.png`}
-              alt="imgCover"
+              alt="imgBahamut"
             />
           </a>&nbsp;
           <a href="https://www.youtube.com/Hiteku" target="_blank" rel="noopener noreferrer">
             <img
               src={`https://hiteku.github.io/img/-/youtube.png`}
-              alt="imgCover"
+              alt="imgYoutube"
             />
           </a> © 2024 Hiteku
         </sub>

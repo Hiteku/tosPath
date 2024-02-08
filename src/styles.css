@@ -51,22 +51,24 @@ input[type="text"] {
   border-radius: 8px;
   padding: 6px;
   margin: 20px 20% 0px;
+  text-align: center;
+}
+
+.result-icon,
+.result-path {
+  padding: 20px 5px;
 }
 
 @media (min-width: 930px) {
   .result {
     display: flex;
   }
-}
-
-.result-icon {
-  width: 48%;
-  padding: 20px;
-}
-
-.result-path {
-  width: 52%;
-  padding: 20px;
+  .result-icon {
+    width: 55%;
+  }
+  .result-path {
+    width: 45%;
+  }
 }
 
 @media (max-width: 930px) {
@@ -137,10 +139,18 @@ input[type="text"] {
 
 .src {
   text-align: center;
+  margin-bottom: 30px;
 }
 
 .src img{
   max-width: 15px;
   margin-bottom: -2px;
   border-radius: 9%;
+}
+
+#imgCover {
+  display: flex;
+  margin: 2% 0px 2% 0px;
+  justify-content: center;
+  align-items: center;
 }
