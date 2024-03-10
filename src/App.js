@@ -65,6 +65,22 @@ function App() {
         return [ { value: 'T', label: '上' }, { value: 'L', label: '左' }, { value: 'R', label: '右' } ];
       case 4:
         return [ { value: 'A', label: '左上' }, { value: 'B', label: '右上' }, { value: 'C', label: '左下' }, { value: 'D', label: '右下' } ];
+      case 13:
+        return [
+          { value: '5', label: '五色' },
+          { value: '5F', label: '五色_消火' },
+          { value: '5W', label: '五色_消水' },
+          { value: '5E', label: '五色_消木' },
+          { value: '5L', label: '五色_消光' },
+          { value: '5D', label: '五色_消暗' },
+          { value: '2', label: '雙色' },
+          { value: '2L', label: '雙色_消光' },
+          { value: '2D', label: '雙色_消暗' },
+          { value: '3', label: '三色' },
+          { value: '3F', label: '三色_消火' },
+          { value: '3W', label: '三色_消水' },
+          { value: '3E', label: '三色_消木' }
+        ];
       default:
         return [];
     }
@@ -147,6 +163,8 @@ function App() {
       branch = 'T'
     else if (selectedItem.branch === 4)
       branch = 'A'
+    else if (selectedItem.branch === 13)
+      branch = '5'
     setSelectedBranch(branch);
     loadNumberImage(itemId, selectedValue, branch);
   };
@@ -243,8 +261,9 @@ function App() {
           {filteredData.map(item => (
             <img
               key={item.id}
-              // src={`${path}/cards/icon/${item.id}i.png`}
-              src={`https://web-assets.tosconfig.com/gallery/icons/${String(item.id).padStart(4, '0')}.jpg`}
+              src={item.id === 20003 
+                ? `${path}/cards/icon/${item.id}i.png` 
+                : `https://web-assets.tosconfig.com/gallery/icons/${String(item.id).padStart(4, '0')}.jpg`}
               alt={`Icon ${item.id}`}
               style={{
                 borderRadius: '9%', 
@@ -273,12 +292,22 @@ function App() {
                   {selectedItem.id === 10410 && (selectedValue !== 'Same_5' && selectedValue !== 'Different_5' ) && 
                     renderCRImage(selectedItem.id, selectedValue, 'jpg')
                   }
+                  {selectedItem.id === 10450 && 
+                    <span>目前僅收錄 <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4061331" target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={`https://hiteku.fly.dev/static/assets/logo/bahamut.png`}
+                        alt="imgBahamut"
+                        style={{ width: '20px', marginBottom: '-4px' }}
+                      />
+                    </a> 部分盤面</span>
+                  }
                   {selectedItem.id === 10580 && (selectedValue === 'Cross-Shaped_1' || selectedValue === 'Cross-Shaped_2' ) && 
                     <img src={`${path}/number/${selectedItem.id}/${selectedValue}.jpg`} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} />
                   }
                   {selectedItem.id === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5' ) && 
                     renderCRImage(selectedItem.id, selectedValue, 'jpg')
                   }
+                  {selectedItem.id === 20003 && <span>該路徑為二消</span>}
                 </>
               ) : (
                 <span style={{ fontSize: '24px' }}>圖檔未補</span>
@@ -291,13 +320,13 @@ function App() {
         <sub>
           <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4103723" target="_blank" rel="noopener noreferrer">
             <img
-              src={`https://hiteku.github.io/img/-/bahamut.png`}
+              src={`https://hiteku.fly.dev/static/assets/logo/bahamut.png`}
               alt="imgBahamut"
             />
           </a>&nbsp;
           <a href="https://www.youtube.com/Hiteku" target="_blank" rel="noopener noreferrer">
             <img
-              src={`https://hiteku.github.io/img/-/youtube.png`}
+              src={`https://hiteku.fly.dev/static/assets/logo/youtube.png`}
               alt="imgYoutube"
             />
           </a> © 2024 Hiteku
