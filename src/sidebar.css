@@ -1,0 +1,66 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -306px;
+  width: 306px;
+  height: 100%;
+  color: #ddd;
+  background-color: rgba(0, 0, 0, 0.7);
+  transition: left 0.3s ease-in-out;
+  z-index: 9;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-icon {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
+
+.icon-open,
+.icon-close {
+  display: block;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.icon-open {
+  color: #ddd
+}
+
+.content {
+  padding: 20px;
+}
+
+.other-tools h2 {
+  margin-top: 33px;
+}
+
+.other-tools h4 {
+  margin: 20px 0px 5px;
+}
+
+.other-tools ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.other-tools ul ul {
+  margin-left: 15px;
+}
+
+.other-tools a {
+  color: #ddd;
+  text-decoration: none;
+}
+
+.other-tools a:hover {
+  text-decoration: underline;
+}
