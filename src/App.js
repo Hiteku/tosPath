@@ -55,6 +55,11 @@ function App() {
     { value: 'Cross-Shaped_3', label: '三十字' },
     { value: 'Same_5', label: '相同五組' },
     { value: 'Different_5', label: '相異五組' },
+    { value: '10C', label: '10C' },
+    { value: '8C_nH', label: '8C無心' },
+    { value: '8C_nW', label: '8C無水' },
+    { value: '8C_nF', label: '8C無火' },
+    { value: '8C_nD', label: '8C無暗' }
   ];
 
   const getBranchLabel = (branchValue) => {
@@ -170,6 +175,7 @@ function App() {
   };
 
   const loadNumberImage = (itemId, selectedValue, selectedBranch) => {
+    if (itemId !== 10617 && ['10C', '8C_nH', '8C_nW', '8C_nF', '8C_nD'].includes(selectedValue)) selectedValue = 15
     const branchPath = selectedBranch ? `/${selectedBranch}` : '';
     const handleImageLoad = (type) => {
       const newImage = new Image();
@@ -215,7 +221,7 @@ function App() {
           options={[
             { name: 'attribute', value: 'water', label: '水' },
             { name: 'attribute', value: 'fire', label: '火' },
-            { name: 'attribute', value: 'wood', label: '木' },
+            { name: 'attribute', value: 'earth', label: '木' },
             { name: 'attribute', value: 'light', label: '光' },
             { name: 'attribute', value: 'dark', label: '暗' },
             { name: 'attribute', value: 'none', label: '不限' },
@@ -230,8 +236,8 @@ function App() {
             { name: 'race', value: 'human', label: '人類' },
             { name: 'race', value: 'beast', label: '獸類' },
             { name: 'race', value: 'dragon', label: '龍類' },
-            { name: 'race', value: 'fairy', label: '妖精' },
-            { name: 'race', value: 'machine', label: '機械' },
+            { name: 'race', value: 'elf', label: '妖精' },
+            { name: 'race', value: 'machina', label: '機械' },
             { name: 'race', value: 'none', label: '不限' },
           ]}
           selected={race}
@@ -239,11 +245,13 @@ function App() {
         />
         <div className='filter' style={{display: 'flex'}} >
           <p>轉法：
-            <select value={selectedValue} onChange={handleSelectChange}>
-              {selectOptions.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
+          <select value={selectedValue} onChange={handleSelectChange}>
+            {selectedItem && selectedItem.id === 10617 ? selectOptions.map(option => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            )) : selectOptions.slice(0, 18).map(option => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
           </p>
           {selectedItem && selectedItem.branch && (
             <p>盤面：
@@ -282,7 +290,7 @@ function App() {
             <>
               {numberImageSrc ? (
                 <>
-                  <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} /><br/>
+                  <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth, marginTop: '8px' }} /><br/>
                   {selectedItem.id === 2828 && <span>該路徑為三消</span>}
                   {selectedItem.id === 10329 && <><span>第三種盤面可參考 </span><img
                     src={`https://hiteku.github.io/img/tos/cards/icon/2791i.png`}
