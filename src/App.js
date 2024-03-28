@@ -266,7 +266,7 @@ function App() {
       </div>
       <div className='result'>
         <div className='result-icon'>
-          {filteredData.map(item => (
+          {filteredData.slice().reverse().map(item => (
             <img
               key={item.id}
               src={item.id === 20003 
