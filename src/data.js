@@ -33,6 +33,8 @@ const data = [
   { id: 10639, attr: 'dark', race: 'human' },
   { id: 10645, attr: 'water', race: 'human' },
   { id: 10646, attr: 'water', race: 'human' },
+  { id: 10647, attr: 'fire', race: 'human' },
+  { id: 10653, attr: 'dark', race: 'human' },
   { id: 20003, attr: 'light', race: 'human' },
 ];
 

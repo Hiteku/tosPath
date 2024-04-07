@@ -297,7 +297,7 @@ function App() {
                     alt="img10329"
                     style={{ width: '35px' }}
                   /></>}
-                  {selectedItem.id === 10410 && (selectedValue !== 'Same_5' && selectedValue !== 'Different_5' ) && 
+                  {selectedItem.id === 10410 && (selectedValue !== 'Same_5' && selectedValue !== 'Different_5') && 
                     renderCRImage(selectedItem.id, selectedValue, 'jpg')
                   }
                   {selectedItem.id === 10450 && 
@@ -309,10 +309,13 @@ function App() {
                       />
                     </a> 部分盤面</span>
                   }
-                  {selectedItem.id === 10580 && (selectedValue === 'Cross-Shaped_1' || selectedValue === 'Cross-Shaped_2' ) && 
+                  {selectedItem.id === 10580 && (selectedValue === 'Cross-Shaped_1' || selectedValue === 'Cross-Shaped_2') && 
                     <img src={`${path}/number/${selectedItem.id}/${selectedValue}.jpg`} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} />
                   }
-                  {selectedItem.id === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5' ) && 
+                  {selectedItem.id === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5') && 
+                    renderCRImage(selectedItem.id, selectedValue, 'jpg')
+                  }
+                  {selectedItem.id === 10645 && (selectedValue !== 'Cross-Shaped_2' && selectedValue !== 'Cross-Shaped_3' && selectedValue !== 'Different_5') && 
                     renderCRImage(selectedItem.id, selectedValue, 'jpg')
                   }
                   {selectedItem.id === 20003 && <span>該路徑為二消</span>}
