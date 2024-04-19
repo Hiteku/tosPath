@@ -179,7 +179,7 @@ function App() {
     const branchPath = selectedBranch ? `/${selectedBranch}` : '';
     const handleImageLoad = (type) => {
       const newImage = new Image();
-      var srcImg = `${path}/number/${itemId}${branchPath}/${selectedValue}.${type}`
+      var srcImg = `${path}/number/${itemId === 10619 ? 20003 : itemId}${branchPath}/${selectedValue}.${type}`
       if (!data.map(item => item.id).includes(itemId))
         srcImg = `https://chaohanlin.github.io/img/tos/number/${itemId}${branchPath}/${selectedValue}.${type}`
       newImage.onload = () => {
@@ -269,8 +269,7 @@ function App() {
           {filteredData.slice().reverse().map(item => (
             <img
               key={item.id}
-              src={item.id === 20003 
-                ? `${path}/cards/icon/${item.id}i.png` 
+              src={item.id === 10619 ? `${path}/cards/icon/20003i.png`
                 : `https://web-assets.tosconfig.com/gallery/icons/${String(item.id).padStart(4, '0')}.jpg`}
               alt={`Icon ${item.id}`}
               style={{
@@ -315,10 +314,10 @@ function App() {
                   {selectedItem.id === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5') && 
                     renderCRImage(selectedItem.id, selectedValue, 'jpg')
                   }
-                  {selectedItem.id === 10645 && (selectedValue !== 'Cross-Shaped_2' && selectedValue !== 'Cross-Shaped_3' && selectedValue !== 'Different_5') && 
+                  {selectedItem.id === 10619 && <span>該路徑為二消</span>}
+                  {(selectedItem.id === 10659 || selectedItem.id === 10645) && (selectedValue !== 'Cross-Shaped_2' && selectedValue !== 'Cross-Shaped_3' && selectedValue !== 'Different_5') && 
                     renderCRImage(selectedItem.id, selectedValue, 'jpg')
                   }
-                  {selectedItem.id === 20003 && <span>該路徑為二消</span>}
                 </>
               ) : (
                 <span style={{ fontSize: '24px' }}>圖檔未補</span>
