@@ -53,14 +53,19 @@ function App() {
     { value: 'Cross-Shaped_1', label: '單十字' },
     { value: 'Cross-Shaped_2', label: '雙十字' },
     { value: 'Cross-Shaped_3', label: '三十字' },
-    { value: 'Same_5', label: '相同五組' },
     { value: 'Different_5', label: '相異五組' },
+    { value: 'Same_5', label: '相同五組' },
     { value: '10C', label: '10C' },
     { value: '8C_nH', label: '8C無心' },
     { value: '8C_nW', label: '8C無水' },
     { value: '8C_nF', label: '8C無火' },
     { value: '8C_nD', label: '8C無暗' }
   ];
+
+  function getLabelByValue(value) {
+    const option = selectOptions.find(opt => opt.value === value);
+    return option ? option.label : null;
+  }
 
   const getBranchLabel = (branchValue) => {
     switch (branchValue) {
@@ -174,12 +179,35 @@ function App() {
     loadNumberImage(itemId, selectedValue, branch);
   };
 
+  const renderCRImage = (itemId, selectedValue) => {
+    const type = 'jpg'
+    const imagePath = `${path}/number/${itemId}/${selectedValue}_CR.${type}`;
+    if (
+      (itemId === 10410 && (selectedValue !== 'Same_5' && selectedValue !== 'Different_5')) ||
+      (itemId === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5')) ||
+      (itemId === 10645 && (selectedValue !== 'Cross-Shaped_2' && selectedValue !== 'Cross-Shaped_3' && selectedValue !== 'Different_5')) ||
+      (itemId === 10659 && (selectedValue !== 'Cross-Shaped_2' && selectedValue !== 'Cross-Shaped_3'))
+    )
+    return <img src={imagePath} alt={`Number ${itemId}_CR`} style={{ width: numberImageWidth }} />;
+  };
+
+  const srcImgUrl = (itemId, branchPath) => {
+    if (itemId === 2752) itemId = 10329  // 暗秦皇-安妮亞
+    if (itemId === 10619) itemId = 20003
+    else if ((itemId === 10696 && branchPath === '/L') || itemId === 10646) { itemId = 10373; branchPath = ''; }
+    else if (itemId === 10636) { itemId = 2828; branchPath = '/1st'; }
+    else if (itemId === 10542) itemId = 2828
+    else if (itemId === 10329 && branchPath === '/T') { itemId = 2791; branchPath = ''; }
+    else if (itemId === 10172 && branchPath === '/T') { itemId = 2186; branchPath = ''; }
+    return `${path}/number/${itemId}${branchPath}/`;
+  };
+
   const loadNumberImage = (itemId, selectedValue, selectedBranch) => {
     if (itemId !== 10617 && ['10C', '8C_nH', '8C_nW', '8C_nF', '8C_nD'].includes(selectedValue)) selectedValue = 15
     const branchPath = selectedBranch ? `/${selectedBranch}` : '';
     const handleImageLoad = (type) => {
       const newImage = new Image();
-      var srcImg = `${path}/number/${itemId === 10619 ? 20003 : itemId}${branchPath}/${selectedValue}.${type}`
+      var srcImg = srcImgUrl(itemId, branchPath) + `${selectedValue}.${type}`
       if (!data.map(item => item.id).includes(itemId))
         srcImg = `https://chaohanlin.github.io/img/tos/number/${itemId}${branchPath}/${selectedValue}.${type}`
       newImage.onload = () => {
@@ -194,16 +222,11 @@ function App() {
       newImage.src = srcImg;
     };
 
-    if (itemId === 10617 || ((itemId === 10598 || itemId === 10580) && isNaN(selectedValue))) {
+    if (itemId === 10617 || itemId === 2914 || ((itemId === 10598 || itemId === 10580) && isNaN(selectedValue))) {
       handleImageLoad('png');
     } else {
       handleImageLoad('jpg');
     }
-  };
-
-  const renderCRImage = (id, value, type) => {
-    const imagePath = `${path}/number/${id}/${value}_CR.${type}`;
-    return <img src={imagePath} alt={`Number ${id}_CR`} style={{ width: numberImageWidth }} />;
   };
 
   return (
@@ -289,16 +312,9 @@ function App() {
             <>
               {numberImageSrc ? (
                 <>
+                  <span>{getLabelByValue(selectedValue)}</span><br/>
                   <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth, marginTop: '8px' }} /><br/>
                   {selectedItem.id === 2828 && <span>該路徑為三消</span>}
-                  {selectedItem.id === 10329 && <><span>第三種盤面可參考 </span><img
-                    src={`https://hiteku.github.io/img/tos/cards/icon/2791i.png`}
-                    alt="img10329"
-                    style={{ width: '35px' }}
-                  /></>}
-                  {selectedItem.id === 10410 && (selectedValue !== 'Same_5' && selectedValue !== 'Different_5') && 
-                    renderCRImage(selectedItem.id, selectedValue, 'jpg')
-                  }
                   {selectedItem.id === 10450 && 
                     <span>目前僅收錄 <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4061331" target="_blank" rel="noopener noreferrer">
                       <img
@@ -311,16 +327,30 @@ function App() {
                   {selectedItem.id === 10580 && (selectedValue === 'Cross-Shaped_1' || selectedValue === 'Cross-Shaped_2') && 
                     <img src={`${path}/number/${selectedItem.id}/${selectedValue}.jpg`} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} />
                   }
-                  {selectedItem.id === 10583 && (selectedValue === 'Same_5' || selectedValue === 'Different_5') && 
-                    renderCRImage(selectedItem.id, selectedValue, 'jpg')
+                  {selectedItem.id === 10617 && selectedValue.includes('8C') &&
+                    <span>其他轉法 <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4113002" target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={`https://hiteku.fly.dev/static/assets/logo/bahamut.png`}
+                        alt="imgBahamut"
+                        style={{ width: '20px', marginBottom: '-4px' }}
+                      />
+                    </a></span>
                   }
-                  {selectedItem.id === 10619 && <span>該路徑為二消</span>}
-                  {(selectedItem.id === 10659 || selectedItem.id === 10645) && (selectedValue !== 'Cross-Shaped_2' && selectedValue !== 'Cross-Shaped_3' && selectedValue !== 'Different_5') && 
-                    renderCRImage(selectedItem.id, selectedValue, 'jpg')
-                  }
+                  {(selectedItem.id === 10628 || selectedItem.id === 10619 || selectedItem.id === 2487) && <span>該路徑為二消</span>}
+                  {renderCRImage(selectedItem.id, selectedValue)}
                 </>
               ) : (
-                <span style={{ fontSize: '24px' }}>圖檔未補</span>
+                (selectedItem.id === 10628) ? <><span>隊長非黛玉可參考 </span><img
+                  src={`https://web-assets.tosconfig.com/gallery/icons/2487.jpg`}
+                  alt="img2487"
+                  style={{ borderRadius: '9%', width: '35px' }}
+                /></>
+                : (selectedItem.id === 2907 && !isNaN(selectedValue)) ? <><span>盤面可參考 </span><img
+                  src={`https://hiteku.github.io/img/tos/cards/icon/10668i.png`}
+                  alt="img10668"
+                  style={{ width: '35px' }}
+                /></>
+                : <span style={{ fontSize: '24px' }}>圖檔未補</span>
               )}
             </>
           )}
