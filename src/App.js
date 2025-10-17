@@ -23,6 +23,49 @@ function RadioOptions({ options, selected, handleOptionChange }) {
   );
 }
 
+function CustomSelect({ options, value, onChange, label }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = React.useRef(null);
+
+  const selectedOption = options.find(opt => opt.value === value);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (selectRef.current && !selectRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  const handleOptionClick = (optionValue) => {
+    onChange({ target: { value: optionValue } });
+    setIsOpen(false);
+  };
+
+  return (
+    <div className={`custom-select ${isOpen ? 'open' : ''}`} ref={selectRef}>
+      <div className="select-trigger" onClick={() => setIsOpen(!isOpen)}>
+        <span>{selectedOption ? selectedOption.label : label}</span>
+        <div className="arrow"></div>
+      </div>
+      <div className="select-options">
+        {options.map(option => (
+          <div
+            key={option.value}
+            className="option"
+            onClick={() => handleOptionClick(option.value)}
+          >
+            {option.label}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [attribute, setAttribute] = useState('none');
   const [race, setRace] = useState('none');
@@ -35,6 +78,7 @@ function App() {
   const [selectedBranch, setSelectedBranch] = useState('1st');
   const [numberImageWidth, setNumberImageWidth] = useState(null);
   const [mergedData, setMergedData] = useState([]);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   const selectOptions = [
     { value: '15', label: '15' },
@@ -205,6 +249,9 @@ function App() {
   const loadNumberImage = (itemId, selectedValue, selectedBranch) => {
     if (itemId !== 10617 && ['10C', '8C_nH', '8C_nW', '8C_nF', '8C_nD'].includes(selectedValue)) selectedValue = 15
     const branchPath = selectedBranch ? `/${selectedBranch}` : '';
+    setIsImageLoading(true); // 開始載入時顯示載入狀態
+    setNumberImageSrc(''); // 清空舊圖片
+    
     const handleImageLoad = (type) => {
       const newImage = new Image();
       var srcImg = srcImgUrl(itemId, branchPath) + `${selectedValue}.${type}`
@@ -214,10 +261,12 @@ function App() {
         const newWidth = `${newImage.width / 3}px`;
         setNumberImageSrc(srcImg);
         setNumberImageWidth(newWidth);
+        setIsImageLoading(false); // 載入完成後隱藏載入狀態
       };
       newImage.onerror = () => {
         setNumberImageSrc('');
         setNumberImageWidth(null);
+        setIsImageLoading(false); // 載入失敗後隱藏載入狀態
       };
       newImage.src = srcImg;
     };
@@ -266,23 +315,23 @@ function App() {
           selected={race}
           handleOptionChange={handleRaceChange}
         />
-        <div className='filter' style={{display: 'flex'}} >
+        <div className="filter" style={{ display: 'flex', flexWrap: 'wrap' }} >
           <p>轉法：
-          <select value={selectedValue} onChange={handleSelectChange}>
-            {selectedItem && selectedItem.id === 10617 ? selectOptions.map(option => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            )) : selectOptions.slice(0, 18).map(option => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
+            <CustomSelect
+              options={selectedItem && selectedItem.id === 10617 ? selectOptions : selectOptions.slice(0, 18)}
+              value={selectedValue}
+              onChange={handleSelectChange}
+              label="請選擇轉法"
+            />
           </p>
           {selectedItem && selectedItem.branch && (
             <p>盤面：
-              <select value={selectedBranch} onChange={handleBranchChange}>
-                {branchOptions.map(branch => (
-                  <option key={branch.value} value={branch.value}>{branch.label}</option>
-                ))}
-              </select>
+              <CustomSelect
+                options={branchOptions}
+                value={selectedBranch}
+                onChange={handleBranchChange}
+                label="請選擇盤面"
+              />
             </p>
           )}
         </div>
@@ -313,7 +362,13 @@ function App() {
               {numberImageSrc ? (
                 <>
                   <span>{getLabelByValue(selectedValue)}</span><br/>
-                  <img src={numberImageSrc} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth, marginTop: '8px' }} /><br/>
+                  {isImageLoading && (
+                    <div className="loading-spinner loading-spinner-with-margin">
+                      <div className="loading-spinner-icon"></div>
+                      <span>載入中...</span>
+                    </div>
+                  )}
+                  <img src={numberImageSrc} alt={`Number ${selectedItem.id}`} className="img-result-path" style={{ width: numberImageWidth }} /><br/>
                   {selectedItem.id === 2828 && <span>該路徑為三消</span>}
                   {selectedItem.id === 10450 && 
                     <span>目前僅收錄 <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4061331" target="_blank" rel="noopener noreferrer">
@@ -325,7 +380,7 @@ function App() {
                     </a> 部分盤面</span>
                   }
                   {selectedItem.id === 10580 && (selectedValue === 'Cross-Shaped_1' || selectedValue === 'Cross-Shaped_2') && 
-                    <img src={`${path}/number/${selectedItem.id}/${selectedValue}.jpg`} alt={`Number ${selectedItem}`} style={{ width: numberImageWidth }} />
+                    <img src={`${path}/number/${selectedItem.id}/${selectedValue}.jpg`} alt={`Number ${selectedItem.id}`} className="img-result-path" style={{ width: numberImageWidth }} />
                   }
                   {selectedItem.id === 10617 && selectedValue.includes('8C') &&
                     <span>其他轉法 <a href="https://forum.gamer.com.tw/Co.php?bsn=23805&sn=4113002" target="_blank" rel="noopener noreferrer">
@@ -348,9 +403,16 @@ function App() {
                 : (selectedItem.id === 2907 && !isNaN(selectedValue)) ? <><span>盤面可參考 </span><img
                   src={`https://hiteku.github.io/img/tos/cards/icon/10668i.png`}
                   alt="img10668"
+                  className="clickable-icon"
                   style={{ width: '35px' }}
+                  onClick={() => handleIconClick(10668)}
                 /></>
-                : <span style={{ fontSize: '24px' }}>圖檔未補</span>
+                : isImageLoading ? (
+                    <div className="loading-spinner">
+                      <div className="loading-spinner-icon"></div>
+                      <span>載入中...</span>
+                    </div>
+                  ) : <span style={{ fontSize: '24px' }}>圖檔未補</span>
               )}
             </>
           )}
